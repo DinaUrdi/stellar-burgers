@@ -2,8 +2,7 @@ import { FC, useEffect, useMemo } from 'react';
 
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
-import { useDispatch } from 'react-redux';
-import { AppDispatch, RootState, useSelector } from '../../services/store';
+import { useSelector, useDispatch } from '../../services/store';
 import { fetchFeeds } from '../../features/feed/feedSlice';
 
 const getOrders = (orders: TOrder[], status: string): number[] =>
@@ -13,8 +12,8 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
     .slice(0, 20);
 
 export const FeedInfo: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const feedState = useSelector((state: RootState) => state.feed);
+  const dispatch = useDispatch();
+  const feedState = useSelector((state) => state.feed);
   const orders: TOrder[] = feedState.orders;
   const feed = useMemo(
     () => ({

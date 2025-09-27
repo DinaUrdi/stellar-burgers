@@ -1,8 +1,7 @@
 import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from 'src/services/store';
+import { RootState, useDispatch, useSelector } from '../../services/store';
 import { createSelector } from '@reduxjs/toolkit';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
@@ -23,22 +22,22 @@ const selectConstructorItems = createSelector(
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const bun = useSelector((state: RootState) => state.burgerConstructor.bun);
+  const bun = useSelector((state) => state.burgerConstructor.bun);
   const ingredients = useSelector(
-    (state: RootState) => state.burgerConstructor.ingredients || []
+    (state) => state.burgerConstructor.ingredients || []
   );
   const constructorItems = useSelector(selectConstructorItems);
   const orderRequest = useSelector(
-    (state: RootState) => state.burgerConstructor.orderRequest
+    (state) => state.burgerConstructor.orderRequest
   );
 
   const orderModalData = useSelector(
-    (state: RootState) => state.burgerConstructor.orderModalData
+    (state) => state.burgerConstructor.orderModalData
   );
 
-  const { user } = useSelector((state: RootState) => state.user);
+  const { user } = useSelector((state) => state.user);
   const isAuth = Boolean(user);
 
   const onOrderClick = () => {

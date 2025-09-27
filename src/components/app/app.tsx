@@ -14,15 +14,14 @@ import styles from './app.module.css';
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from '../ProtectedRoute';
 import { AppHeader, Modal, OrderInfo, IngredientDetails } from '@components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from '../../services/store';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../features/ingredients/ingredientsSlice';
 import { setUser } from '../../features/user/userSlice';
-import { AppDispatch, RootState } from '../../services/store';
 import { getUserApi } from '@api';
 
 const App = () => {
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state) => state.user.user);
   const isAuth = Boolean(user);
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +29,7 @@ const App = () => {
   const closeModal = () => {
     navigate(state?.backgroundLocation || '/', { replace: true });
   };
-  const dispatch = useDispatch() as AppDispatch;
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchIngredients());
     getUserApi()
