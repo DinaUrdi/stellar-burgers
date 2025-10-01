@@ -1,4 +1,4 @@
-import { loginUserApi, logoutApi, registerUserApi } from '@api';
+import { getUserApi, loginUserApi, logoutApi, registerUserApi } from '@api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { setCookie } from '../../utils/cookie';
 
@@ -20,12 +20,14 @@ interface UserState {
   user: User | null;
   loading: boolean;
   error?: string;
+  isAuthChecked: boolean;
 }
 
 const initialState: UserState = {
   user: null,
   loading: false,
-  error: undefined
+  error: undefined,
+  isAuthChecked: false
 };
 
 export const registerUser = createAsyncThunk(
@@ -81,11 +83,26 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+export const checkUserAuth = createAsyncThunk(
+  'user/checkAuth',
+  async (_, { rejectWithValue, dispatch }) => {
+    try {
+      const res = await getUserApi();
+      return res.user;
+    } catch (err: any) {
+      localStorage.removeItem('refreshToken');
+      document.cookie =
+        'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      return rejectWithValue(err.message || 'Ошибка проверки авторизации');
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<User>) {
+    setUser(state, action: PayloadAction<User | null>) {
       state.user = action.payload;
     }
   },
@@ -123,6 +140,24 @@ const userSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
+      })
+      .addCase(checkUserAuth.pending, (state) => {
+        state.loading = true;
+        state.error = undefined;
+      })
+      .addCase(
+        checkUserAuth.fulfilled,
+        (state, action: PayloadAction<User>) => {
+          state.user = action.payload;
+          state.loading = false;
+          state.isAuthChecked = true;
+        }
+      )
+      .addCase(checkUserAuth.rejected, (state, action) => {
+        state.user = null;
+        state.loading = false;
+        state.isAuthChecked = true;
+        state.error = action.payload as string;
       });
   }
 });

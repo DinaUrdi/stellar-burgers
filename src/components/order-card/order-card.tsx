@@ -16,7 +16,6 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
     const path = isProfilePage
       ? `/profile/orders/${order.number}`
       : `/feed/${order.number}`;
-
     navigate(path, {
       state: { backgroundLocation: location }
     });

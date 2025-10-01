@@ -17,8 +17,9 @@ import { AppHeader, Modal, OrderInfo, IngredientDetails } from '@components';
 import { useDispatch, useSelector } from '../../services/store';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../features/ingredients/ingredientsSlice';
-import { setUser } from '../../features/user/userSlice';
+import { checkUserAuth, setUser } from '../../features/user/userSlice';
 import { getUserApi } from '@api';
+import { Preloader } from '@ui';
 
 const App = () => {
   const user = useSelector((state) => state.user.user);
@@ -27,17 +28,40 @@ const App = () => {
   const location = useLocation();
   const state = location.state as { backgroundLocation?: Location };
   const closeModal = () => {
+    sessionStorage.removeItem('modalPath');
     navigate(state?.backgroundLocation || '/', { replace: true });
   };
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchIngredients());
-    getUserApi()
-      .then((res) => {
-        dispatch(setUser(res.user));
-      })
-      .catch(() => {});
+    dispatch(checkUserAuth());
   }, [dispatch]);
+  const isAuthChecked = useSelector((state) => state.user.isAuthChecked);
+
+  useEffect(() => {
+    if (isAuthChecked && isAuth) {
+      if (
+        ['/login', '/register', '/forgot-password', '/reset-password'].includes(
+          location.pathname
+        )
+      ) {
+        navigate('/', { replace: true });
+      }
+    } else if (isAuthChecked && !isAuth) {
+      if (location.pathname.startsWith('/profile')) {
+        navigate('/login', { replace: true, state: { from: location } });
+      }
+    }
+  }, [isAuthChecked, isAuth, location.pathname, navigate]);
+
+  if (!isAuthChecked) {
+    return (
+      <div className={styles.app}>
+        <AppHeader />
+        <Preloader />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.app}>

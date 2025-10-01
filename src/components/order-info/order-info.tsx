@@ -8,7 +8,10 @@ import { useSelector } from '../../services/store';
 export const OrderInfo: FC = () => {
   /** TODO: взять переменные orderData и ingredients из стора */
   const { number } = useParams<{ number: string }>();
-  const orders = useSelector((state) => state.feed.orders);
+  const isProfileOrder = location.pathname.includes('/profile/orders');
+  const orders = useSelector((state) =>
+    isProfileOrder ? state.orders.userOrders : state.feed.orders
+  );
   const ingredients = useSelector((state) => state.ingredients.ingredients);
   const orderData = orders.find((o: TOrder) => o.number === Number(number));
 
