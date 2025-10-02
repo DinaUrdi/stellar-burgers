@@ -1,26 +1,10 @@
+import { getIngredientsApi } from '@api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TIngredient } from '@utils-types';
 
 export const fetchIngredients = createAsyncThunk<TIngredient[]>(
   'ingredients/fetchIngredients',
-  async () => {
-    const res = await fetch(process.env.BURGER_API_URL + '/ingredients');
-    if (!res.ok) throw new Error('Ошибка загрузки ингредиентов');
-    const data = await res.json();
-    return data.data.map((item: any) => ({
-      _id: item._id,
-      name: item.name,
-      price: item.price,
-      type: item.type,
-      image: item.image,
-      image_large: item.image_large,
-      image_mobile: item.image_mobile,
-      proteins: item.proteins,
-      fat: item.fat,
-      carbohydrates: item.carbohydrates,
-      calories: item.calories
-    })) as TIngredient[];
-  }
+  async () => await getIngredientsApi()
 );
 
 interface IngredientsState {

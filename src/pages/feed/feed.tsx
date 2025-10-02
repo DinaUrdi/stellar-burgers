@@ -18,5 +18,12 @@ export const Feed: FC = () => {
 
   if (feedState.loading && !orders.length) return <Preloader />;
 
-  return <FeedUI orders={orders} handleGetFeeds={() => {}} />;
+  return (
+    <FeedUI
+      orders={orders}
+      handleGetFeeds={() => {
+        dispatch(fetchFeeds());
+      }}
+    />
+  );
 };

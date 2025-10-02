@@ -10,7 +10,7 @@ import { FC } from 'react';
 export const ConstructorPage: FC = () => {
   /** TODO: взять переменную из стора */
   const isIngredientsLoading = useSelector(
-    (state: RootState) => state.ingredients.isLoading
+    (state) => state.ingredients.isLoading
   );
 
   return (
