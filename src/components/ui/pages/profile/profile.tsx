@@ -35,6 +35,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             errorText={''}
             size={'default'}
             icon={'EditIcon'}
+            autoComplete='username'
           />
         </div>
         <div className='pb-6'>
@@ -48,6 +49,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             errorText={''}
             size={'default'}
             icon={'EditIcon'}
+            autoComplete='username'
           />
         </div>
         <div className='pb-6'>
@@ -61,6 +63,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             errorText={''}
             size={'default'}
             icon={'EditIcon'}
+            autoComplete='current-password'
           />
         </div>
         {isFormChanged && (

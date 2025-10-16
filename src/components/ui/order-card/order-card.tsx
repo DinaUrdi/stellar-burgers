@@ -11,12 +11,11 @@ import { OrderCardUIProps } from './type';
 import { OrderStatus } from '@components';
 
 export const OrderCardUI: FC<OrderCardUIProps> = memo(
-  ({ orderInfo, maxIngredients, locationState }) => (
-    <Link
-      to={orderInfo.number.toString()}
-      relative='path'
-      state={locationState}
+  ({ orderInfo, maxIngredients, locationState, handleClick }) => (
+    <div
+      onClick={handleClick}
       className={`p-6 mb-4 mr-2 ${styles.order}`}
+      style={{ cursor: 'pointer' }}
     >
       <div className={styles.order_info}>
         <span className={`text text_type_digits-default ${styles.number}`}>
@@ -29,7 +28,7 @@ export const OrderCardUI: FC<OrderCardUIProps> = memo(
       <h4 className={`pt-6 text text_type_main-medium ${styles.order_name}`}>
         {orderInfo.name}
       </h4>
-      {location.pathname === '/profile/orders' && (
+      {locationState?.background?.pathname === '/profile/orders' && (
         <OrderStatus status={orderInfo.status} />
       )}
       <div className={`pt-6 ${styles.order_content}`}>
@@ -74,6 +73,6 @@ export const OrderCardUI: FC<OrderCardUIProps> = memo(
           <CurrencyIcon type='primary' />
         </div>
       </div>
-    </Link>
+    </div>
   )
 );
