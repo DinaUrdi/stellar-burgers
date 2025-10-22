@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for features/ingredients/ingredientsSlice.ts</title>
+    <title>Code coverage report for features/feed/feedSlice.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">features/ingredients</a> ingredientsSlice.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">features/feed</a> feedSlice.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.65% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>52/58</span>
+                <span class='fraction'>56/56</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.65% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>52/58</span>
+                <span class='fraction'>56/56</span>
             </div>
         
             
@@ -119,9 +119,7 @@
 <a name='L54'></a><a href='#L54'>54</a>
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -147,16 +145,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -178,65 +175,62 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { getIngredientsApi } from '@api';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TIngredient } from '@utils-types';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getFeedsApi } from '@api';
+import { TOrder } from '@utils-types';
 &nbsp;
-export const fetchIngredients = createAsyncThunk&lt;TIngredient[]&gt;(
-  'ingredients/fetchIngredients',
-  async () =&gt; await getIngredientsApi()
-);
-&nbsp;
-interface IngredientsState {
-  ingredients: TIngredient[];
-  isLoading: boolean;
-  error: string | null;
+interface FeedState {
+  orders: TOrder[];
+  total: number;
+  totalToday: number;
+  loading: boolean;
+  error?: string;
 }
 &nbsp;
-const initialState: IngredientsState = {
-  ingredients: [],
-  isLoading: false,
-  error: null
+const initialState: FeedState = {
+  orders: [],
+  total: 0,
+  totalToday: 0,
+  loading: false,
+  error: undefined
 };
 &nbsp;
-const ingredientsSlice = createSlice({
-  name: 'ingredients',
+export const fetchFeeds = createAsyncThunk(
+  'feed/fetchFeeds',
+  async (_, { rejectWithValue }) =&gt; {
+    try {
+      const res = await getFeedsApi();
+      return res;
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Ошибка загрузки ленты');
+    }
+  }
+);
+&nbsp;
+const feedSlice = createSlice({
+  name: 'feed',
   initialState,
-  reducers: {
-    setIngredients<span class="fstat-no" title="function not covered" >(state, action: PayloadAction&lt;TIngredient[]&gt;) {</span>
-<span class="cstat-no" title="statement not covered" >      state.ingredients = action.payload;</span>
-<span class="cstat-no" title="statement not covered" >      state.isLoading = false;</span>
-    },
-    setLoading<span class="fstat-no" title="function not covered" >(state, action: PayloadAction&lt;boolean&gt;) {</span>
-<span class="cstat-no" title="statement not covered" >      state.isLoading = action.payload;</span>
-    },
-    setError<span class="fstat-no" title="function not covered" >(state, action: PayloadAction&lt;string | null&gt;) {</span>
-<span class="cstat-no" title="statement not covered" >      state.error = action.payload;</span>
-<span class="cstat-no" title="statement not covered" >      state.isLoading = false;</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-  },
+  reducers: {},
   extraReducers: (builder) =&gt; {
     builder
-      .addCase(fetchIngredients.pending, (state) =&gt; {
-        state.isLoading = true;
-        state.error = null;
+      .addCase(fetchFeeds.pending, (state) =&gt; {
+        state.loading = true;
+        state.error = undefined;
       })
-      .addCase(fetchIngredients.fulfilled, (state, action) =&gt; {
-        state.ingredients = action.payload;
-        state.isLoading = false;
+      .addCase(fetchFeeds.fulfilled, (state, action) =&gt; {
+        state.orders = action.payload.orders;
+        state.total = action.payload.total;
+        state.totalToday = action.payload.totalToday;
+        state.loading = false;
       })
-      .addCase(fetchIngredients.rejected, (state, action) =&gt; {
-        state.isLoading = false;
-        state.error =
-          action.error.message || 'Не удалось загрузить ингредиенты';
+      .addCase(fetchFeeds.rejected, (state, action) =&gt; {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   }
 });
 &nbsp;
-export const { setIngredients, setLoading, setError } =
-  ingredientsSlice.actions;
-export default ingredientsSlice.reducer;
+export default feedSlice.reducer;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
