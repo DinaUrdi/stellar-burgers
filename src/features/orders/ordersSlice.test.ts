@@ -12,6 +12,12 @@ jest.mock('@api', () => ({
 }));
 
 describe('тесты асинхронных экшенов ordersSlice', () => {
+  const initialState = {
+    userOrders: [],
+    currentOrder: null,
+    loading: false,
+    error: undefined
+  };
   describe('тесты для fetchUserOrders', () => {
     test('загрузка заказов', async () => {
       const expectedResult = [
@@ -30,24 +36,26 @@ describe('тесты асинхронных экшенов ordersSlice', () => {
       expect(state.error).toBeUndefined();
     });
     test('включение лоадера', async () => {
-      const initialState = {
-        userOrders: [],
-        currentOrder: null,
-        loading: false,
-        error: undefined
+      const expectedState = {
+        ...initialState,
+        loading: true
       };
       const nextState = ordersReducer(
         initialState,
         fetchUserOrders.pending('id', undefined)
       );
-      expect(nextState.loading).toEqual(true);
+      expect(nextState).toEqual(expectedState);
     });
     test('ошибка загрузки', () => {
-      const initialState = {
-        userOrders: [],
-        currentOrder: null,
-        loading: true,
-        error: undefined
+      const loadingState = {
+        ...initialState,
+        loading: true
+      };
+
+      const expectedState = {
+        ...loadingState,
+        loading: false,
+        error: 'Ошибка загрузки заказов'
       };
 
       const action = {
@@ -56,9 +64,8 @@ describe('тесты асинхронных экшенов ordersSlice', () => {
         error: { message: 'Rejected' }
       };
 
-      const nextState = ordersReducer(initialState, action);
-      expect(nextState.loading).toBe(false);
-      expect(nextState.error).toBe('Ошибка загрузки заказов');
+      const nextState = ordersReducer(loadingState, action);
+      expect(nextState).toEqual(expectedState);
     });
   });
   describe('тесты для fetchOrderByNumber', () => {
@@ -81,24 +88,26 @@ describe('тесты асинхронных экшенов ordersSlice', () => {
       expect(state.error).toBeUndefined();
     });
     test('включение лоадера', async () => {
-      const initialState = {
-        userOrders: [],
-        currentOrder: null,
-        loading: false,
-        error: undefined
+      const expectedState = {
+        ...initialState,
+        loading: true
       };
       const nextState = ordersReducer(
         initialState,
         fetchOrderByNumber.pending('id', 1)
       );
-      expect(nextState.loading).toEqual(true);
+      expect(nextState).toEqual(expectedState);
     });
     test('ошибка загрузки', () => {
-      const initialState = {
-        userOrders: [],
-        currentOrder: null,
-        loading: true,
-        error: undefined
+      const loadingState = {
+        ...initialState,
+        loading: true
+      };
+
+      const expectedState = {
+        ...loadingState,
+        loading: false,
+        error: 'Ошибка загрузки заказа'
       };
 
       const action = {
@@ -107,9 +116,8 @@ describe('тесты асинхронных экшенов ordersSlice', () => {
         error: { message: 'Rejected' }
       };
 
-      const nextState = ordersReducer(initialState, action);
-      expect(nextState.loading).toBe(false);
-      expect(nextState.error).toBe('Ошибка загрузки заказа');
+      const nextState = ordersReducer(loadingState, action);
+      expect(nextState).toEqual(expectedState);
     });
   });
 });

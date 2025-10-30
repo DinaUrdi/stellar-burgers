@@ -7,6 +7,14 @@ jest.mock('@api', () => ({
   getFeedsApi: jest.fn()
 }));
 
+const initialState = {
+  orders: [],
+  total: 0,
+  totalToday: 0,
+  loading: false,
+  error: undefined
+};
+
 describe('тесты асинхронных экшенов feedSlice', () => {
   test('загрузка ленты', async () => {
     const expectedResult = {
@@ -49,36 +57,32 @@ describe('тесты асинхронных экшенов feedSlice', () => {
     expect(error).toBeUndefined();
   });
   test('включение лоадера', async () => {
-    const initialState = {
-      orders: [],
-      total: 0,
-      totalToday: 0,
-      loading: false,
-      error: undefined
-    };
     const nextState = feedReducer(
       initialState,
       fetchFeeds.pending('id', undefined)
     );
-    expect(nextState.loading).toEqual(true);
-  });
-  test('ошибка загрузки', () => {
-    const initialState = {
-      orders: [],
-      total: 0,
-      totalToday: 0,
-      loading: true,
-      error: undefined
+    const expectedState = {
+      ...initialState,
+      loading: true
     };
 
+    expect(nextState).toEqual(expectedState);
+  });
+  test('ошибка загрузки', () => {
     const action = {
       type: fetchFeeds.rejected.type,
       payload: 'Ошибка загрузки ленты',
       error: { message: 'Rejected' }
     };
 
-    const nextState = feedReducer(initialState, action);
-    expect(nextState.loading).toBe(false);
-    expect(nextState.error).toBe('Ошибка загрузки ленты');
+    const nextState = feedReducer({ ...initialState, loading: true }, action);
+
+    const expectedState = {
+      ...initialState,
+      loading: false,
+      error: 'Ошибка загрузки ленты'
+    };
+
+    expect(nextState).toEqual(expectedState);
   });
 });

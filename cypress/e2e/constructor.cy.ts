@@ -17,6 +17,11 @@ describe('Страница конструктора бургера', () => {
     cy.wait('@getIngredients');
   });
 
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+  });
+
   it('Отображает ингредиенты после загрузки', () => {
     cy.get('[data-testid="ingredient-card"]').should(
       'have.length.greaterThan',

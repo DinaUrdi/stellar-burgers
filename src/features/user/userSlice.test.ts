@@ -27,6 +27,12 @@ Object.defineProperty(global, 'localStorage', {
 });
 
 describe('тесты асинхронных экшенов userSlice', () => {
+  const initialState = {
+    user: null,
+    loading: false,
+    error: undefined,
+    isAuthChecked: false
+  };
   describe('тесты для registerUser', () => {
     test('успешная регистрация', async () => {
       const expectedResult = {
@@ -50,11 +56,9 @@ describe('тесты асинхронных экшенов userSlice', () => {
       expect(state.loading).toBe(false);
     });
     test('включение лоадера', async () => {
-      const initialState = {
-        user: null,
-        loading: false,
-        error: undefined,
-        isAuthChecked: false
+      const expectedState = {
+        ...initialState,
+        loading: true
       };
       const nextState = userReducer(
         initialState,
@@ -64,23 +68,25 @@ describe('тесты асинхронных экшенов userSlice', () => {
           password: '123'
         })
       );
-      expect(nextState.loading).toEqual(true);
+      expect(nextState).toEqual(expectedState);
     });
     test('ошибка загрузки', async () => {
-      const initialState = {
-        user: null,
-        loading: true,
-        error: undefined,
-        isAuthChecked: false
+      const loadingState = {
+        ...initialState,
+        loading: true
+      };
+      const expectedState = {
+        ...loadingState,
+        loading: false,
+        error: 'Ошибка регистрации'
       };
       const action = {
         type: registerUser.rejected.type,
         payload: 'Ошибка регистрации',
         error: { message: 'Rejected' }
       };
-      const nextState = userReducer(initialState, action);
-      expect(nextState.loading).toBe(false);
-      expect(nextState.error).toBe('Ошибка регистрации');
+      const nextState = userReducer(loadingState, action);
+      expect(nextState).toEqual(expectedState);
     });
   });
   describe('тесты для loginUser', () => {
@@ -105,11 +111,9 @@ describe('тесты асинхронных экшенов userSlice', () => {
       expect(state.loading).toBe(false);
     });
     test('включение лоадера', async () => {
-      const initialState = {
-        user: null,
-        loading: false,
-        error: undefined,
-        isAuthChecked: false
+      const expectedState = {
+        ...initialState,
+        loading: true
       };
       const nextState = userReducer(
         initialState,
@@ -118,23 +122,25 @@ describe('тесты асинхронных экшенов userSlice', () => {
           password: '123'
         })
       );
-      expect(nextState.loading).toEqual(true);
+      expect(nextState).toEqual(expectedState);
     });
     test('ошибка входа', async () => {
-      const initialState = {
-        user: null,
-        loading: true,
-        error: undefined,
-        isAuthChecked: false
+      const loadingState = {
+        ...initialState,
+        loading: true
+      };
+      const expectedState = {
+        ...loadingState,
+        loading: false,
+        error: 'Ошибка входа'
       };
       const action = {
         type: loginUser.rejected.type,
         payload: 'Ошибка входа',
         error: { message: 'Rejected' }
       };
-      const nextState = userReducer(initialState, action);
-      expect(nextState.loading).toBe(false);
-      expect(nextState.error).toBe('Ошибка входа');
+      const nextState = userReducer(loadingState, action);
+      expect(nextState).toEqual(expectedState);
     });
   });
   describe('тесты для logoutUser', () => {
@@ -170,33 +176,34 @@ describe('тесты асинхронных экшенов userSlice', () => {
       expect(state.loading).toBe(false);
     });
     test('включение лоадера', async () => {
-      const initialState = {
-        user: null,
-        loading: false,
-        error: undefined,
-        isAuthChecked: false
+      const expectedState = {
+        ...initialState,
+        loading: true
       };
       const nextState = userReducer(
         initialState,
         checkUserAuth.pending('requestId')
       );
-      expect(nextState.loading).toEqual(true);
+      expect(nextState).toEqual(expectedState);
     });
     test('ошибка проверки авторизации', async () => {
-      const initialState = {
-        user: null,
-        loading: true,
-        error: undefined,
-        isAuthChecked: false
+      const loadingState = {
+        ...initialState,
+        loading: true
+      };
+      const expectedState = {
+        ...loadingState,
+        loading: false,
+        error: 'Ошибка проверки авторизации',
+        isAuthChecked: true
       };
       const action = {
         type: checkUserAuth.rejected.type,
         payload: 'Ошибка проверки авторизации',
         error: { message: 'Rejected' }
       };
-      const nextState = userReducer(initialState, action);
-      expect(nextState.loading).toBe(false);
-      expect(nextState.error).toBe('Ошибка проверки авторизации');
+      const nextState = userReducer(loadingState, action);
+      expect(nextState).toEqual(expectedState);
     });
   });
 });

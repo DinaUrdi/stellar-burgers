@@ -8,6 +8,11 @@ jest.mock('@api', () => ({
 }));
 
 describe('тесты асинхронных экшенов ingredientSlice', () => {
+  const initialState = {
+    ingredients: [],
+    isLoading: false,
+    error: null
+  };
   test('загрузка ингредиентов', async () => {
     const expectedResult = [
       {
@@ -51,28 +56,30 @@ describe('тесты асинхронных экшенов ingredientSlice', () 
     expect(store.getState().ingredients.isLoading).toBe(false);
   });
   test('включение лоадера', async () => {
-    const initialState = {
-      ingredients: [],
-      isLoading: false,
-      error: null
+    const expectedState = {
+      ...initialState,
+      isLoading: true
     };
     const nextState = ingredientsReducer(
       initialState,
       fetchIngredients.pending('id', undefined)
     );
-    expect(nextState.isLoading).toEqual(true);
+    expect(nextState).toEqual(expectedState);
   });
   test('ошибка загрузки', async () => {
-    const initialState = {
-      ingredients: [],
-      isLoading: true,
-      error: null
+    const initialLoadingState = {
+      ...initialState,
+      isLoading: true
+    };
+    const expectedState = {
+      ...initialLoadingState,
+      isLoading: false,
+      error: 'Не удалось загрузить ингредиенты'
     };
     const nextState = ingredientsReducer(
       initialState,
       fetchIngredients.rejected(new Error(), '123', undefined)
     );
-    expect(nextState.isLoading).toBe(false);
-    expect(nextState.error).toBe('Не удалось загрузить ингредиенты');
+    expect(nextState).toEqual(expectedState);
   });
 });
