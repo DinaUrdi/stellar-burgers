@@ -18,7 +18,10 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
   onOrderClick,
   closeOrderModal
 }) => (
-  <section className={styles.burger_constructor}>
+  <section
+    className={styles.burger_constructor}
+    data-testid='burger-constructor'
+  >
     {constructorItems.bun ? (
       <div className={`${styles.element} mb-4 mr-4`}>
         <ConstructorElement
@@ -27,6 +30,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
           text={`${constructorItems.bun.name} (верх)`}
           price={constructorItems.bun.price}
           thumbnail={constructorItems.bun.image}
+          data-testid='constructor-bun-top'
         />
       </div>
     ) : (
@@ -45,6 +49,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
               index={index}
               totalItems={constructorItems.ingredients.length}
               key={item.id}
+              data-testid='constructor-ingredient'
             />
           )
         )
@@ -64,6 +69,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
           text={`${constructorItems.bun.name} (низ)`}
           price={constructorItems.bun.price}
           thumbnail={constructorItems.bun.image}
+          data-testid='constructor-bun-bottom'
         />
       </div>
     ) : (
@@ -75,7 +81,9 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
     )}
     <div className={`${styles.total} mt-10 mr-4`}>
       <div className={`${styles.cost} mr-10`}>
-        <p className={`text ${styles.text} mr-2`}>{price}</p>
+        <p className={`text ${styles.text} mr-2`} data-testid='total-price'>
+          {price}
+        </p>
         <CurrencyIcon type='primary' />
       </div>
       <Button
@@ -84,6 +92,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
         size='large'
         children='Оформить заказ'
         onClick={onOrderClick}
+        data-testid='order-button'
       />
     </div>
 
@@ -98,7 +107,10 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
         onClose={closeOrderModal}
         title={orderRequest ? 'Оформляем заказ...' : ''}
       >
-        <OrderDetailsUI orderNumber={orderModalData.number} />
+        <OrderDetailsUI
+          orderNumber={orderModalData.number}
+          data-testid='order-number'
+        />
       </Modal>
     )}
   </section>
